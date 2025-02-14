@@ -1,0 +1,57 @@
+Commands to help rip movies:
+
+Back up disk with makemkv:
+makemkvcon backup disc:DiskName /Volumes/SANDISK5/RippedMovies/<movieName>/backup
+
+Convert all audio streams to AAC:
+ffmpeg -i ./source.mkv -y -map 0 -c copy -c:a aac destWithAACAudio.mkv
+
+Copy to server disk without root permissions:
+tar -c source.mkv | ssh -p527 casaos@192.168.0.83 "sudo tar -x --no-same-owner -C /media/devmon/Sandisk7/JellyfinMediaDest/Movies/destdir/"
+
+Get current playing segment in VLC:
+while true; do lsof -p "$(ps aux | grep -i VLC | grep -v grep | awk '{print $2}')" | grep "m2ts" | awk '{print $NF}'; sleep 1; done
+
+Scale movie to 720p:
+ffmpeg -i input_video.mkv \
+-map 0 \
+-vf "scale=1280:720" \
+-c:v libx264 -crf 18 \
+-c:a copy \
+-c:s copy \
+output_720p.mkv
+
+Scale movie to 720p and convert audio to AAC:
+ffmpeg -i input_video.mkv \
+-map 0 \
+-vf "scale=1280:720" \
+-c:v libx264 -crf 18 \
+-c:a aac \
+-c:s copy \
+output_720p.mkv
+
+
+Copy to the server:
+tar -c source.mkv | ssh -p527 casaos@192.168.0.83 "sudo tar -x --no-same-owner -C /media/devmon/Sandisk7/JellyfinMediaDest/Movies/Movie\ Name/"
+
+
+ffmpeg in segments:
+
+to start, add the following flags to ffmpeg command, and remove output arg:
+`-f segment -segment_time 30 -segment_list segments.csv -reset_timestamps 1 seg%03d.mkv`
+
+to continue, check the last segment's start num (we assume 17) and start timestamp of previous segments csv file (we assume it's 512.720000), then add these flags to the command:
+`-ss 512.720000 -segment_time 30 -segment_list segments2.csv -segment_start_number 17 -reset_timestamps 1 seg%03d.mkv`
+(-ss flag might have to go at the beginning's "input flags", try both ways)
+
+to concatenate, first make sure the first file ends and second file begins with the same segment file name, then do:
+`~/Documents/git/rip_tools/csvconcat.sh segments.csv segments2.csv > segments_out.csv`
+
+and then keep running that for as many segment csv files you have, e.g.:
+`~/Documents/git/rip_tools/csvconcat.sh segments_out.csv segments3.csv > segments_out2.csv`
+
+and then generate ffcat file by running:
+`~/Documents/git/rip_tools/gen_ffcat.sh segments_out2.csv > segments.ffcat`
+
+and finally concatenate all using:
+`ffmpeg.exe -f concat -i .\segments.ffcat -c copy output.mkv`

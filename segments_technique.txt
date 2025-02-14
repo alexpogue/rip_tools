@@ -1,0 +1,1 @@
+https://video.stackexchange.com/questions/32297/resuming-a-partially-completed-encode-with-ffmpeg

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source "$SCRIPT_DIR/config.sh"
+
 function has_volume_been_added() {
   earlier_volume_ls="$1"
 
@@ -29,7 +32,7 @@ function run_progress_checker() {
     if [ "$retcode" -eq 0 ]; then
       current_volume="$added_volume"
     fi
-    du -d0 -h "/Volumes/DVDRipping/RippedMovies/${current_volume}/backup/${current_volume}"
+    du -d0 -h "${DVD_RIP_DIR}/${current_volume}/backup/${current_volume}"
     sleep 15
   done
 }

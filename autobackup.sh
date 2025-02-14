@@ -40,7 +40,8 @@ function backup_discs_loop() {
     mkdir -p "$backup_dir"
     echo "backing up to $backup_dir, monitor with:"
     echo "while true; do du -d0 -h ${backup_dir}; sleep 15; done"
-    makemkvcon backup disc:${volume_name} "${backup_dir}/"
+    #makemkvcon backup disc:${volume_name} "${backup_dir}/"
+    makemkvcon backup "disc:${volume_name}" "${backup_dir}/${volume_name}.iso"
     echo "done, check logs, and eject and insert another disc"
     play_beep_sound
     play_beep_sound
