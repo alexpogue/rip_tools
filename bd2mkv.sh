@@ -48,6 +48,8 @@ while read -r index_bdmv_file; do
     cp "$mkv_original_path" "$mkv_encoded_path"
   fi
 
+# TODO: manually enter final jellyfin file name in a text file for use in next step.. Look it up here
+
 # TODO: detect aspect ratio, e.g. if encoded file is 1080p:
 # 1. copy it to "aspect_mkv" directory, named properly like ${mkv_file_name(without mkv suffix)}-1080p.mkv
 # 2. run ffmpeg commands to reencode the original file to the new aspect ratio for whichever aspect ratios are still missing (same command as original encoding one, but with `-vf "scale=1280:720"` and friends added)
