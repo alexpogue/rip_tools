@@ -30,7 +30,7 @@ while read -r index_bdmv_file; do
   needs_encoding=1 #false
 
   if [[ $(grep -c "[^[:space:]]" <<< "$aac_lines") -eq 0 ]]; then
-    ffmpeg_audio_flag="-c:a aac"
+    ffmpeg_audio_flag="-c:a aac -ac 2"
     needs_encoding=0 #true
   fi
   if [[ $(grep -c "[^[:space:]]" <<< "$h264_lines") -eq 0 ]]; then

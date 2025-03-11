@@ -1,1 +1,1 @@
-DVD_RIP_DIR="/Volumes/DVDRipping2/RippedMovies"
+DVD_RIP_DIR="/Volumes/WD22_1/RippedMovies"

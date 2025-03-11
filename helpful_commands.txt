@@ -28,11 +28,17 @@ ffmpeg -i input_video.mkv \
 -c:v libx264 -crf 18 \
 -c:a aac \
 -c:s copy \
+-ac 2 \
 output_720p.mkv
 
 
 Copy to the server:
 tar -c source.mkv | ssh -p527 casaos@192.168.0.83 "sudo tar -x --no-same-owner -C /media/devmon/Sandisk7/JellyfinMediaDest/Movies/Movie\ Name/"
+
+echo "<Movie_name>" > movietitle.txt
+export MOVIE_QUALITY="720p"
+export LOCAL_MOVIE="output_720p.mkv"
+tar -c ${LOCAL_MOVIE} | ssh -p527 casaos@192.168.0.83 "sudo mkdir -p \"/media/devmon/Sandisk7/JellyfinMediaDest/Movies/$(< movietitle.txt)/\" && sudo tar -x --no-same-owner -C \"/media/devmon/Sandisk7/JellyfinMediaDest/Movies/$(< movietitle.txt)/\" && sudo mv \"/media/devmon/Sandisk7/JellyfinMediaDest/Movies/$(< movietitle.txt)/${LOCAL_MOVIE}\" \"/media/devmon/Sandisk7/JellyfinMediaDest/Movies/$(< movietitle.txt)/$(< movietitle.txt) - ${MOVIE_QUALITY}.mkv\""
 
 
 ffmpeg in segments:
