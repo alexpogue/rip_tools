@@ -27,20 +27,22 @@ fi
 original_movie_file_name="$(echo "$original_movie_matches" | awk '{$1=$1};1')"
 original_movie_file_path="${original_movie_encoding_dir}/${original_movie_file_name}"
 
-resolution_aspect_ratio_pairs="$(< "${SCRIPT_DIR}/resolutions.txt")"
+resolution_aspect_ratio_pairs="$(< "${SCRIPT_DIR}/encode_resolutions.txt")"
+echo "resolution_aspect_ratio_pairs = $resolution_aspect_ratio_pairs"
 
 movie_file_name="$(< ${main_movie_dir}/movietitle.txt)"
 
 encoded_mkv_dir="${main_movie_dir}/mkvs_encoded"
 mkdir -p "$encoded_mkv_dir"
 
-while read -r resolution_aspect_ratio_pairs; do
-  resolution_name="$(awk '{print $1}' <<< "$resolution_aspect_ratio_pairs")"
+while read -r resolution_aspect_ratio_pair; do
+  echo "resolution_aspect_ratio_pair = $resolution_aspect_ratio_pair"
+  resolution_name="$(awk '{print $1}' <<< "$resolution_aspect_ratio_pair")"
   final_file_name="${movie_file_name} - ${resolution_name}.mkv"
 
   final_movie_already_there="$(ls "$encoded_mkv_dir" | grep "${resolution_name}\.mkv$")"
   if [[ "$(grep -cve '^\s*$' <<< "$final_movie_already_there")" -gt 0 ]]; then
-    echo "Already found movie ${movie_dir_name} with resolution $resolution_name in $main_movie_dir."
+    echo "Already found movie ${movie_dir_name} with resolution $resolution_name in $encoded_mkv_dir."
     continue
   fi
   final_file_path="${encoded_mkv_dir}/${final_file_name}"
@@ -50,7 +52,7 @@ while read -r resolution_aspect_ratio_pairs; do
   h264_lines="$(echo "$mkv_info" | grep "h264")"
 
   original_movie_aspect_ratio="$(echo "$mkv_info" | grep "resolution" | cut -f2)"
-  desired_aspect_ratio="$(awk '{print $2}' <<< "$resolution_aspect_ratio_pairs")"
+  desired_aspect_ratio="$(awk '{print $2}' <<< "$resolution_aspect_ratio_pair")"
 
   ffmpeg_audio_flag="-c:a copy"
   ffmpeg_video_flag="-c:v copy"
@@ -76,32 +78,20 @@ while read -r resolution_aspect_ratio_pairs; do
   if [[ "$needs_encoding" -eq 1 ]]; then
     echo "Encoding $movie_dir_name : $resolution_name..."
     output_log_path="${encoded_mkv_dir}/${resolution_name}.out"
-    ffmpeg_command="ffmpeg -i \"$original_movie_file_path\" -map 0 $ffmpeg_aspect_ratio_flags $ffmpeg_video_flag $ffmpeg_audio_flag $ffmpeg_subtitles_flag \"$final_file_path\""
-    #echo "ffmpeg_command: $ffmpeg_command"
-    #eval "$ffmpeg_command"
-    zsh -c "$ffmpeg_command"
-    #zsh -c "echo \"hi\"; exit 1"
-    echo "Aspect Ratio Flags: $ffmpeg_aspect_ratio_flags"
-    echo "Video Flags: $ffmpeg_video_flag"
-    echo "Audio Flags: $ffmpeg_audio_flag"
-    echo "Subtitles Flags: $ffmpeg_subtitles_flag"
-      #-vf scale=1920:1080
-    ffmpeg_cmd=(
+    ffmpeg_args=(
+      -nostdin
       -i "$original_movie_file_path"
       -map 0
-      #$ffmpeg_aspect_ratio_flags
-      $ffmpeg_video_flag
-      $ffmpeg_audio_flag
-      $ffmpeg_subtitles_flag
-      $final_file_path
+      ${(s: :)ffmpeg_aspect_ratio_flags}
+      ${(s: :)ffmpeg_video_flag}
+      ${(s: :)ffmpeg_audio_flag}
+      ${(s: :)ffmpeg_subtitles_flag}
+      "$final_file_path"
     )
-    #ffmpeg -i "$original_movie_file_path" -map 0 $ffmpeg_aspect_ratio_flags $ffmpeg_video_flag $ffmpeg_audio_flag $ffmpeg_subtitles_flag "$final_file_path"
-    #zsh -c "ffmpeg ${ffmpeg_cmd[@]}"
-    #echo "ffmpeg command: ffmpeg ${ffmpeg_cmd[@]}"
+    ffmpeg "${ffmpeg_args[@]}" 2>&1 | tee "${encoded_mkv_dir}/out-${resolution_name}.log"
   else
     echo "$movie_dir_name is already in the correct format and resolution - copying to final file..."
     cp "$original_movie_file_path" "$final_file_path"
   fi
-  echo "hello"
 
 done <<< "$resolution_aspect_ratio_pairs"
