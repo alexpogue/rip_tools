@@ -9,7 +9,8 @@ for dir in "${directories[@]}"; do
   trimmed_dir="$(echo "$dir" | awk '{$1=$1};1')"
   movie_title_file="${trimmed_dir}/movietitle.txt"
   if [ -f "$movie_title_file" ]; then
-    echo -n "Which movie is \"$(basename $trimmed_dir)\"? ($(< "$movie_title_file" )) "
+#    echo -n "Which movie is \"$(basename $trimmed_dir)\"? ($(< "$movie_title_file" )) "
+    continue
   else
     echo -n "Which movie is \"$(basename $trimmed_dir)\"? "
   fi

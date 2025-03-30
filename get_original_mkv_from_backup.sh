@@ -3,7 +3,10 @@
 . ~/.zshrc
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source "$SCRIPT_DIR/config.sh"
+
+if [[ -z "$DVD_RIP_DIR" ]]; then
+  source "$SCRIPT_DIR/config.sh"
+fi
 
 movie_dir_name="$1"
 
@@ -36,7 +39,8 @@ original_mkv_dir="${main_movie_dir}/mkv_original"
 
 mkdir -p "$original_mkv_dir"
 
-mkv_file_already_there="$(ls "$original_mkv_dir")"
+
+mkv_file_already_there="$(ls "$original_mkv_dir" | grep ".mkv$")"
 echo "mkv_file_already_there = $mkv_file_already_there"
 echo "line count = $(echo "$mkv_file_already_there" | grep -cve '^\s*$')"
 if [[ "$(grep -cve "^\s*$" <<< "$mkv_file_already_there")" -gt 0 ]]; then

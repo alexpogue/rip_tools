@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source "$SCRIPT_DIR/config.sh"
+
+
+if [[ -z "$DVD_RIP_DIR" ]]; then
+  source "$SCRIPT_DIR/config.sh"
+fi
 
 movie_dir_name="$1"
 
@@ -25,6 +29,18 @@ while read -r resolution; do
   if ! [ -f "$local_file_path" ]; then
     echo "File not found locally $local_file_path . Skipping $resolution resolution."
     continue
+  fi
+
+  remote_file_path="${remote_movie_dir}/${local_file_name}"
+
+  echo "Checking if file exists on server already: $remote_file_path"
+  ssh -p527 casaos@192.168.0.83 "sudo ls \"${remote_file_path}\""
+  ret="$?"
+  if [[ "$ret" -eq 0 ]]; then
+    echo "already exists, continue."
+    continue
+  else
+    echo "Does not exist. Upload."
   fi
 
   echo "Uploading $local_file_path to the server..."

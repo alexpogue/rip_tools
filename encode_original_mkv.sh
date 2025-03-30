@@ -3,7 +3,10 @@
 . ~/.zshrc
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source "$SCRIPT_DIR/config.sh"
+
+if [[ -z "$DVD_RIP_DIR" ]]; then
+  source "$SCRIPT_DIR/config.sh"
+fi
 
 movie_dir_name="$1"
 
@@ -80,6 +83,7 @@ while read -r resolution_aspect_ratio_pair; do
     output_log_path="${encoded_mkv_dir}/${resolution_name}.out"
     ffmpeg_args=(
       -nostdin
+      -threads 8
       -i "$original_movie_file_path"
       -map 0
       ${(s: :)ffmpeg_aspect_ratio_flags}
