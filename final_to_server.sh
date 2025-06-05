@@ -13,7 +13,7 @@ main_movie_dir="${DVD_RIP_DIR}/${movie_dir_name}"
 
 RESOLUTIONS="$(cat "${SCRIPT_DIR}/upload_resolutions.txt")"
 FILE_EXTENSION="mkv"
-REMOTE_MOVIES_DIR="/media/devmon/Sandisk7/JellyfinMediaDest/Movies"
+REMOTE_MOVIES_DIR="/media/devmon/Sandisk8/JellyfinMedia/Movies"
 
 movie_title="$(< "${main_movie_dir}/movietitle.txt")"
 
