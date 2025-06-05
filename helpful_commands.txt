@@ -3,6 +3,9 @@ Commands to help rip movies:
 Back up disk with makemkv:
 makemkvcon backup disc:DiskName /Volumes/SANDISK5/RippedMovies/<movieName>/backup
 
+convert mp4 to mkv:
+ffmpeg -i input.mp4 -c copy output.mkv
+
 Convert all audio streams to AAC:
 ffmpeg -i ./source.mkv -y -map 0 -c copy -c:a aac destWithAACAudio.mkv
 
