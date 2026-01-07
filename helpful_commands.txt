@@ -11,6 +11,12 @@ ffmpeg -i ./source.mkv -y -map 0 -c copy -c:a aac destWithAACAudio.mkv
 
 Copy to server disk without root permissions:
 tar -c source.mkv | ssh -p527 casaos@192.168.0.83 "sudo tar -x --no-same-owner -C /media/devmon/Sandisk7/JellyfinMediaDest/Movies/destdir/"
+OR
+rsync -avz -e 'ssh -p 527' --rsync-path='sudo rsync' /path/to/local/folder/ casaos@192.168.0.83:/media/devmon/Sandisk7/JellyfinMediaDest/
+
+
+Copy from server disk without root permissions:
+rsync -avz -e 'ssh -p 527' --rsync-path="sudo rsync" casaos@192.168.0.83:/media/devmon/Sandisk7/JellyfinMediaDest/BOURNE_ULTIM ./
 
 Get current playing segment in VLC:
 while true; do lsof -p "$(ps aux | grep -i VLC | grep -v grep | awk '{print $2}')" | grep "m2ts" | awk '{print $NF}'; sleep 1; done

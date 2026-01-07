@@ -76,7 +76,11 @@ for i in {1..$num_movies}; do
 
   echo "Copying mkvs_encoded back to DVD_RIP_DIR dir (${LOCAL_DVD_RIP_DIR}/${movie_dir_name}/mkvs_encoded -> ${main_movie_dir}/mkvs_encoded)"
   mkdir -p "${main_movie_dir}/mkvs_encoded"
-  cp -rf "${LOCAL_DVD_RIP_DIR}/${movie_dir_name}/mkvs_encoded"/* "${main_movie_dir}/mkvs_encoded/"
+  if [[ "$(ls -1 "${LOCAL_DVD_RIP_DIR}/${movie_dir_name}/mkvs_encoded" 2> /dev/null | grep -c "\.mkv$")" -eq 0 ]]; then
+    echo "ERROR: No mkvs_encoded after encoding attempt"
+  else
+    cp -rf "${LOCAL_DVD_RIP_DIR}/${movie_dir_name}/mkvs_encoded"/* "${main_movie_dir}/mkvs_encoded/"
+  fi
 
   echo "Deleting $movie_dir_name from ${LOCAL_DVD_RIP_DIR}"
   rm -r "${LOCAL_DVD_RIP_DIR}/${movie_dir_name}"

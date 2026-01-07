@@ -5,7 +5,10 @@ source ~/.zshrc
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 source "$SCRIPT_DIR/config.sh"
 
-mapfile directories < <(find "$DVD_RIP_DIR" -type d -mindepth 1 -maxdepth 1 | sort)
+directories=()
+while IFS= read -r line; do
+  directories+=("$line")
+done < <(find "$DVD_RIP_DIR" -type d -mindepth 1 -maxdepth 1 | sort)
 
 for dir in "${directories[@]}"; do
   trimmed_dir="$(echo "$dir" | awk '{$1=$1};1')"
@@ -13,6 +16,7 @@ for dir in "${directories[@]}"; do
   echo "Titles for \"$(basename $trimmed_dir)\":"
 
   backup_dir_name="$(ls "${trimmed_dir}/backup/")"
+  echo "backup_dir_name = $backup_dir_name"
   num_backup_dirs="$(grep -c "^" <<< "$backup_dir_name")"
   if [[ "$num_backup_dirs" -eq 0 ]]; then
     echo "Error: found zero backup dirs for movie \"$(basename $trimmed_dir)\""
@@ -47,6 +51,7 @@ for dir in "${directories[@]}"; do
 
   if [ -f "$picked_title_file" ]; then
     echo -n "Which title to rip for \"$(basename $trimmed_dir)\"? ($(< "$picked_title_file" )) "
+    continue
   else
     echo -n "Which title to rip for \"$(basename $trimmed_dir)\"? "
   fi
