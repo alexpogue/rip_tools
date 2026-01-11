@@ -70,3 +70,16 @@ and then generate ffcat file by running:
 
 and finally concatenate all using:
 `ffmpeg.exe -f concat -i .\segments.ffcat -c copy output.mkv`
+
+
+
+Get rid of jitters in 60fps recorded footage:
+
+ffmpeg -i 127_HOURS.mov \
+-vf "minterpolate=fps=24000/1001:mi_mode=mci:mc_mode=obmc:me_mode=bidir" \
+-c:v libx264 -crf 20 -preset fast \
+-c:a copy \
+127_HOURS_24fps_minterpolate_fast.mkv
+
+Non interpolate (faster, very slight jitter due to recording 60fps from less fps on disc)
+ffmpeg -i TALENTED_MR_RIPLEY.mov -ss 00:00:02 -to 2:19:08 -c copy TALENTED_MR_RIPLEY.mkv
