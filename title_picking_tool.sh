@@ -12,7 +12,7 @@ done < <(find "$DVD_RIP_DIR" -type d -mindepth 1 -maxdepth 1 | sort)
 
 for dir in "${directories[@]}"; do
   trimmed_dir="$(echo "$dir" | awk '{$1=$1};1')"
-  picked_title_file="${trimmed_dir}/title_num_to_rip.txt"
+  picked_title_file="${trimmed_dir}/title_mpls_file_to_rip.txt""
   echo "Titles for \"$(basename $trimmed_dir)\":"
 
   backup_dir_name="$(ls "${trimmed_dir}/backup/")"
@@ -55,9 +55,18 @@ for dir in "${directories[@]}"; do
   else
     echo -n "Which title to rip for \"$(basename $trimmed_dir)\"? "
   fi
-  read -r line
-  trimmed_line="$(echo "$line" | awk '{$1=$1};1')"
-  if [ -n "$trimmed_line" ]; then
-    echo "$trimmed_line" > "${trimmed_dir}/title_num_to_rip.txt"
+  read -r line_num
+  trimmed_line_num="$(echo "$line_num" | awk '{$1=$1};1')"
+  echo "trimmed_line_num = $trimmed_line_num"
+  if [ -n "$trimmed_line_num" ]; then
+    echo "title_info_cache_file = $title_info_cache_file"
+    line="$(awk "NR==$((trimmed_line_num + 1))" "${title_info_cache_file}")"
+    echo "line = $line"
+    if [[ -n "$line" ]]; then
+      mpls_file="$(awk -F', ' '{print $NF}' <<< "$line")"
+      echo "$mpls_file" > "${trimmed_dir}/title_mpls_file_to_rip.txt"
+    else
+      echo "Invalid line number."
+    fi
   fi
 done

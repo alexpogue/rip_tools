@@ -23,8 +23,8 @@ for i in {1..$num_movies}; do
   main_movie_dir="${DVD_RIP_DIR}/${movie_dir_name}"
   movie_file_name="$(< ${main_movie_dir}/movietitle.txt)"
 
-  if ! [[ -f "${main_movie_dir}/title_num_to_rip.txt" ]]; then
-    echo "didn't find ${main_movie_dir}/title_num_to_rip.txt, skipping"
+  if ! [[ -f "${main_movie_dir}/title_mpls_file_to_rip.txt" ]]; then
+    echo "didn't find ${main_movie_dir}/title_mpls_file_to_rip.txt, skipping"
     continue
   fi
   if ! [[ -f "${main_movie_dir}/movietitle.txt" ]]; then

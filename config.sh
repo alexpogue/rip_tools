@@ -1,3 +1,7 @@
-DVD_RIP_DIR="/Volumes/WD22_1/RippedMovies"
+#DVD_RIP_DIR="/Volumes/WD22_1/RippedMovies"
+#DVD_RIP_DIR="/Volumes/RippedMovies/__MOVIERIPPING_JUNE_2026_NAS_DVD"
+#DVD_RIP_DIR="/Volumes/RippedMovies/__MOVIERIPPING_JUNE_2026_NAS"
+DVD_RIP_DIR="/Volumes/RippedMovies/__INVESTIGATION"
 #DVD_RIP_DIR="/Users/alex/Desktop/tmp_movie_dir"
 LOCAL_DVD_RIP_DIR="/Users/alex/Desktop/tmp_movie_dir"
+#LOCAL_DVD_RIP_DIR="/Volumes/RippedMovies/__INVESTIGATION"

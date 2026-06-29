@@ -28,19 +28,18 @@ if ! [[ -f "$iso_file_or_dir" ]] && ! [[ -d "$iso_file_or_dir" ]]; then
   continue
 fi
 
-title_num_to_rip_file_path="${main_movie_dir}/title_num_to_rip.txt"
-if ! [[ -f "$title_num_to_rip_file_path" ]]; then
-  echo "Error: couldn't decide which title to rip, because can't find file: $title_num_to_rip_file_path"
+title_mpls_to_rip_file_path="${main_movie_dir}/title_mpls_file_to_rip.txt"
+if ! [[ -f "$title_mpls_to_rip_file_path" ]]; then
+  echo "Error: couldn't decide which .mpls to rip, because can't find file: $title_mpls_to_rip_file_path"
   exit 3
 fi
-title_num_to_rip="$(< "$title_num_to_rip_file_path")"
+title_mpls_file_to_rip="$(< "$title_mpls_to_rip_file_path")"
 
 original_mkv_dir="${main_movie_dir}/mkv_original"
 
 mkdir -p "$original_mkv_dir"
 
-
-mkv_file_already_there="$(ls "$original_mkv_dir" | grep ".mkv$")"
+mkv_file_already_there="$(find "$original_mkv_dir" -maxdepth 1 -name '*.mkv')"
 echo "mkv_file_already_there = $mkv_file_already_there"
 echo "line count = $(echo "$mkv_file_already_there" | grep -cve '^\s*$')"
 if [[ "$(grep -cve "^\s*$" <<< "$mkv_file_already_there")" -gt 0 ]]; then
@@ -48,4 +47,10 @@ if [[ "$(grep -cve "^\s*$" <<< "$mkv_file_already_there")" -gt 0 ]]; then
   exit 4
 fi
 
-makemkvcon mkv file:"$iso_file_or_dir" "$title_num_to_rip" "$original_mkv_dir" | tee "${original_mkv_dir}/out.log"
+titles_list="$(./get_titles_from_backup.sh "$iso_file_or_dir")"
+echo "For movie $movie_dir_name, ripping title $title_mpls_file_to_rip ($(grep -F ", ${title_mpls_file_to_rip}$" <<< "$titles_list"))"
+
+makemkv_title_num_to_rip="$(${SCRIPT_DIR}/extract_title_id_from_mpls.sh "${main_movie_dir}" "${title_mpls_file_to_rip}")"
+echo "title num = $makemkv_title_num_to_rip"
+
+makemkvcon mkv file:"$iso_file_or_dir" "$makemkv_title_num_to_rip" "$original_mkv_dir" | tee "${original_mkv_dir}/out.log"
