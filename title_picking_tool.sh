@@ -12,7 +12,7 @@ done < <(find "$DVD_RIP_DIR" -type d -mindepth 1 -maxdepth 1 | sort)
 
 for dir in "${directories[@]}"; do
   trimmed_dir="$(echo "$dir" | awk '{$1=$1};1')"
-  picked_title_file="${trimmed_dir}/title_mpls_file_to_rip.txt""
+  picked_title_file="${trimmed_dir}/title_mpls_file_to_rip.txt"
   echo "Titles for \"$(basename $trimmed_dir)\":"
 
   backup_dir_name="$(ls "${trimmed_dir}/backup/")"

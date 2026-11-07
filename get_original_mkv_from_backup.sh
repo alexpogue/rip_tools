@@ -48,7 +48,7 @@ if [[ "$(grep -cve "^\s*$" <<< "$mkv_file_already_there")" -gt 0 ]]; then
 fi
 
 titles_list="$(./get_titles_from_backup.sh "$iso_file_or_dir")"
-echo "For movie $movie_dir_name, ripping title $title_mpls_file_to_rip ($(grep -F ", ${title_mpls_file_to_rip}$" <<< "$titles_list"))"
+echo "For movie $movie_dir_name, ripping title $title_mpls_file_to_rip ($(grep ", ${title_mpls_file_to_rip}$" <<< "$titles_list"))"
 
 makemkv_title_num_to_rip="$(${SCRIPT_DIR}/extract_title_id_from_mpls.sh "${main_movie_dir}" "${title_mpls_file_to_rip}")"
 echo "title num = $makemkv_title_num_to_rip"
